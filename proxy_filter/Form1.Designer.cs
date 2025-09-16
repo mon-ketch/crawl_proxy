@@ -40,13 +40,15 @@
             label3 = new Label();
             label4 = new Label();
             button2 = new Button();
+            textBox6 = new TextBox();
+            label5 = new Label();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(384, 41);
+            button1.Location = new Point(306, 73);
             button1.Name = "button1";
-            button1.Size = new Size(60, 44);
+            button1.Size = new Size(60, 23);
             button1.TabIndex = 0;
             button1.Text = "Start";
             button1.UseVisualStyleBackColor = true;
@@ -74,15 +76,15 @@
             // 
             textBox2.Location = new Point(28, 27);
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(166, 23);
+            textBox2.Size = new Size(129, 23);
             textBox2.TabIndex = 3;
             textBox2.Text = "14.160.0.0";
             // 
             // textBox3
             // 
-            textBox3.Location = new Point(212, 27);
+            textBox3.Location = new Point(171, 27);
             textBox3.Name = "textBox3";
-            textBox3.Size = new Size(166, 23);
+            textBox3.Size = new Size(114, 23);
             textBox3.TabIndex = 3;
             textBox3.Text = "14.162.255.255";
             // 
@@ -99,7 +101,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(212, 9);
+            label2.Location = new Point(171, 9);
             label2.Name = "label2";
             label2.Size = new Size(35, 15);
             label2.TabIndex = 4;
@@ -109,15 +111,15 @@
             // 
             textBox4.Location = new Point(28, 74);
             textBox4.Name = "textBox4";
-            textBox4.Size = new Size(166, 23);
+            textBox4.Size = new Size(129, 23);
             textBox4.TabIndex = 3;
             textBox4.Text = "1";
             // 
             // textBox5
             // 
-            textBox5.Location = new Point(212, 74);
+            textBox5.Location = new Point(171, 74);
             textBox5.Name = "textBox5";
-            textBox5.Size = new Size(166, 23);
+            textBox5.Size = new Size(114, 23);
             textBox5.TabIndex = 3;
             textBox5.Text = "65535";
             // 
@@ -135,7 +137,7 @@
             // 
             label4.AutoSize = true;
             label4.ForeColor = SystemColors.Highlight;
-            label4.Location = new Point(212, 56);
+            label4.Location = new Point(171, 56);
             label4.Name = "label4";
             label4.Size = new Size(47, 15);
             label4.TabIndex = 4;
@@ -143,23 +145,42 @@
             // 
             // button2
             // 
-            button2.Location = new Point(454, 41);
+            button2.Location = new Point(372, 73);
             button2.Name = "button2";
-            button2.Size = new Size(80, 43);
+            button2.Size = new Size(72, 23);
             button2.TabIndex = 0;
             button2.Text = "Stop/Reset";
             button2.UseVisualStyleBackColor = true;
             button2.Click += buttonReset_Click;
+            // 
+            // textBox6
+            // 
+            textBox6.Location = new Point(306, 27);
+            textBox6.Name = "textBox6";
+            textBox6.Size = new Size(46, 23);
+            textBox6.TabIndex = 3;
+            textBox6.Text = "30";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(306, 9);
+            label5.Name = "label5";
+            label5.Size = new Size(138, 15);
+            label5.TabIndex = 5;
+            label5.Text = "Connections Http/Https:";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(555, 258);
+            Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label2);
             Controls.Add(label3);
             Controls.Add(label1);
+            Controls.Add(textBox6);
             Controls.Add(textBox5);
             Controls.Add(textBox4);
             Controls.Add(textBox3);
@@ -188,5 +209,7 @@
         private Label label3;
         private Label label4;
         private Button button2;
+        private TextBox textBox6;
+        private Label label5;
     }
 }

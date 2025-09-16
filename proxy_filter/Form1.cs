@@ -13,8 +13,8 @@ namespace proxy_filter
 {
     public partial class Form1 : Form
     {
-        private readonly string outputFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "live_ips.txt");
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(15); // số kết nối đồng thời
+        private string outputFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "live_ips.txt");
+        private SemaphoreSlim semaphore;// số kết nối đồng thời
         private CancellationTokenSource cts;
         private bool isRunning = false;
 
@@ -31,8 +31,18 @@ namespace proxy_filter
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            
+
             if (!isRunning)
             {
+
+                // Khởi tạo semaphore từ textBox6
+                int maxConnections = 30;
+                if (!int.TryParse(textBox6.Text, out maxConnections) || maxConnections <= 0)
+                    maxConnections = 30;
+                semaphore?.Dispose(); // dispose nếu đã tồn tại
+                semaphore = new SemaphoreSlim(maxConnections);
+
                 // Start hoặc Resume
                 button1.Text = "Stop";
                 isRunning = true;
@@ -158,7 +168,7 @@ namespace proxy_filter
                 using (var client = new TcpClient())
                 {
                     var connectTask = client.ConnectAsync(ip, port);
-                    var timeoutTask = Task.Delay(300); // timeout nhanh
+                    var timeoutTask = Task.Delay(500); // timeout nhanh
                     var completedTask = await Task.WhenAny(connectTask, timeoutTask);
                     return completedTask == connectTask && client.Connected;
                 }
