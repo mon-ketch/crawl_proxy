@@ -1,0 +1,16 @@
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.Form1.resources
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.csproj.GenerateResource.cache
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.GeneratedMSBuildEditorConfig.editorconfig
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.AssemblyInfoInputs.cache
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.AssemblyInfo.cs
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.csproj.CoreCompileInputs.cache
+C:\c_sharp\proxy_filter\proxy_filter\bin\Debug\net8.0-windows\proxy_filter.exe
+C:\c_sharp\proxy_filter\proxy_filter\bin\Debug\net8.0-windows\proxy_filter.deps.json
+C:\c_sharp\proxy_filter\proxy_filter\bin\Debug\net8.0-windows\proxy_filter.runtimeconfig.json
+C:\c_sharp\proxy_filter\proxy_filter\bin\Debug\net8.0-windows\proxy_filter.dll
+C:\c_sharp\proxy_filter\proxy_filter\bin\Debug\net8.0-windows\proxy_filter.pdb
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.dll
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\refint\proxy_filter.dll
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.pdb
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\proxy_filter.genruntimeconfig.cache
+C:\c_sharp\proxy_filter\proxy_filter\obj\Debug\net8.0-windows\ref\proxy_filter.dll
