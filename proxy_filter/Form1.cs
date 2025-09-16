@@ -14,32 +14,13 @@ namespace proxy_filter
     public partial class Form1 : Form
     {
         private readonly string outputFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "live_ips.txt");
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(30); // 30 kết nối TCP đồng thời
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(15); // số kết nối đồng thời
+        private CancellationTokenSource cts;
+        private bool isRunning = false;
 
-        // =====================================================
-        // HƯỚNG DẪN TÍNH SỐ IP TRONG DÃY
-        //
-        // Ví dụ dãy IP từ 14.160.0.0 → 14.162.5.255
-        //
-        // Công thức:
-        // Số IP = (A2 - A1) * 256^3 
-        //         + (B2 - B1) * 256^2 
-        //         + (C2 - C1) * 256^1 
-        //         + (D2 - D1) * 256^0
-        // Sau đó cộng 1 vì số đầu dãy cũng tính
-        //
-        // Ví dụ:
-        // Start IP: 14.160.0.0
-        // End IP:   14.162.5.255
-        //
-        // A: 14 → 14 → (14-14)*256^3 = 0
-        // B: 162-160 → 2*256^2 = 131072
-        // C: 5-0 → 5*256 = 1280
-        // D: 255-0 → 255*1 = 255
-        //
-        // Tổng số IP = 0 + 131072 + 1280 + 255 + 1 = 132608 IP
-        //
-        // =====================================================
+        private List<string> allIPs = new List<string>();
+        private int currentIPIndex = 0;
+        private int currentPort = 0;
 
         public Form1()
         {
@@ -50,80 +31,110 @@ namespace proxy_filter
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            button1.Enabled = false;
-            textBox1.Clear();
-            listBox1.Items.Clear();
-
-            if (File.Exists(outputFile))
-                File.Delete(outputFile);
-
-            string startIP = textBox1.Text; // "14.160.0.0";
-            string endIP = textBox2.Text;  //"14.255.255.255"; // demo
-            var allIPs = GenerateIPRange(startIP, endIP).ToList();
-
-            var tasks = new List<Task>();
-
-            foreach (var ip in allIPs)
+            if (!isRunning)
             {
-                // Mỗi IP = 1 Task
-                tasks.Add(Task.Run(async () =>
+                // Start hoặc Resume
+                button1.Text = "Stop";
+                isRunning = true;
+                cts = new CancellationTokenSource();
+                var token = cts.Token;
+
+                if (allIPs.Count == 0) // lần đầu tạo danh sách IP
                 {
-                    for (int port = 1; port <= 65535; port++) // demo port, có thể thay 65535
+                    string startIP = textBox2.Text;
+                    string endIP = textBox3.Text;
+                    allIPs = GenerateIPRange(startIP, endIP).ToList();
+                    currentIPIndex = 0;
+                    currentPort = int.Parse(textBox4.Text);
+                    textBox1.Clear();
+                    listBox1.Items.Clear();
+                    if (File.Exists(outputFile)) File.Delete(outputFile);
+                }
+
+                try
+                {
+                    await RunScan(token);
+                    if (!token.IsCancellationRequested)
+                        MessageBox.Show($"Quét xong! Proxy live đã lưu vào {outputFile}", "Hoàn tất");
+                }
+                catch (OperationCanceledException)
+                {
+                    AddListBoxText("Quét đã bị dừng.");
+                }
+                finally
+                {
+                    isRunning = false;
+                    button1.Text = "Resume";
+                }
+            }
+            else
+            {
+                // Stop
+                cts.Cancel();
+                button1.Text = "Resume";
+                isRunning = false;
+            }
+        }
+
+        private async Task RunScan(CancellationToken token)
+        {
+            for (int i = currentIPIndex; i < allIPs.Count; i++)
+            {
+                string ip = allIPs[i];
+                currentIPIndex = i; // lưu index hiện tại
+
+                for (int port = currentPort; port <= int.Parse(textBox5.Text); port++)
+                {
+                    currentPort = port; // lưu port hiện tại
+
+                    token.ThrowIfCancellationRequested();
+
+                    await semaphore.WaitAsync(token);
+                    try
                     {
-                        await semaphore.WaitAsync();
-                        try
+                        bool isPortOpen = await CheckPort(ip, port);
+                        AddListBoxText($"Check {ip}:{port}" + (isPortOpen ? " | Live" : " | Die"));
+
+                        if (isPortOpen)
                         {
-                            
+                            bool isProxyAlive = await TestProxy(ip, port);
+                            AddListBoxText($"Test {ip}:{port}" + (isProxyAlive ? " | Live" : " | Die"));
 
-                            // Lưu kết quả vào biến riêng
-                            bool isPortOpen = await CheckPort(ip, port);
-
-                            // Update ListBox ngay
-                            listBox1.Invoke((Action)(() =>
+                            if (isProxyAlive)
                             {
-                                listBox1.Items.Add($"Check {ip}:{port}" + (isPortOpen ? " | Live " : " | Die"));
-                                listBox1.TopIndex = listBox1.Items.Count - 1;
-                            }));
-
-                            if (isPortOpen)
-                            {
-
-                                // Nếu port là HTTP/HTTPS → test proxy
-                                
-                                bool isProxyAlive = await TestProxy(ip, port);
-                                // Update ListBox ngay
-                                listBox1.Invoke((Action)(() =>
-                                {
-                                    listBox1.Items.Add($"Test {ip}:{port}" + ( isProxyAlive ? " | Live " : " | Die" ) );
-                                    listBox1.TopIndex = listBox1.Items.Count - 1;
-                                }));
-
                                 string result = $"Check {ip}:{port}";
-
-                                if (isProxyAlive)
-                                {
-                                    textBox1.Invoke((Action)(() =>
-                                    {
-                                        textBox1.AppendText(result + Environment.NewLine);
-                                        textBox1.SelectionStart = textBox1.Text.Length;
-                                        textBox1.ScrollToCaret();
-                                    }));
-
-                                    try { await File.AppendAllTextAsync(outputFile, result + Environment.NewLine); }
-                                    catch { }
-                                }
-                                
+                                AddTextBoxText(result);
+                                try { await File.AppendAllTextAsync(outputFile, result + Environment.NewLine, token); }
+                                catch { }
                             }
                         }
-                        finally { semaphore.Release(); }
                     }
-                }));
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }
+                currentPort = int.Parse(textBox4.Text); // reset port cho IP mới
             }
+        }
 
-            await Task.WhenAll(tasks);
+        private void AddListBoxText(string text)
+        {
+            listBox1.BeginInvoke((Action)(() =>
+            {
+                listBox1.Items.Add(text);
+                listBox1.TopIndex = listBox1.Items.Count - 1;
+            }));
+        }
 
-            MessageBox.Show($"Quét xong! Proxy live đã lưu vào {outputFile}", "Hoàn tất");
-            button1.Enabled = true;
+        private void AddTextBoxText(string text)
+        {
+            textBox1.BeginInvoke((Action)(() =>
+            {
+                textBox1.AppendText(text + Environment.NewLine);
+                textBox1.SelectionStart = textBox1.Text.Length;
+                textBox1.ScrollToCaret();
+            }));
         }
 
         // Sinh dãy IP
@@ -172,6 +183,34 @@ namespace proxy_filter
             {
                 return false;
             }
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            // Dừng quét nếu đang chạy
+            if (isRunning && cts != null)
+            {
+                cts.Cancel();
+                isRunning = false;
+            }
+
+            // Reset các biến trạng thái
+            allIPs.Clear();
+            currentIPIndex = 0;
+            currentPort = int.Parse(textBox4.Text);
+
+            // Xóa dữ liệu hiển thị
+            textBox1.Clear();
+            listBox1.Items.Clear();
+
+            // Xóa file kết quả
+            if (File.Exists(outputFile))
+                File.Delete(outputFile);
+
+            // Reset nút Start
+            button1.Text = "Start";
+
+            AddListBoxText("Reset Done !");
         }
     }
 }

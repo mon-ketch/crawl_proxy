@@ -39,15 +39,16 @@
             textBox5 = new TextBox();
             label3 = new Label();
             label4 = new Label();
+            button2 = new Button();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(398, 27);
+            button1.Location = new Point(384, 41);
             button1.Name = "button1";
-            button1.Size = new Size(136, 70);
+            button1.Size = new Size(60, 44);
             button1.TabIndex = 0;
-            button1.Text = "Start Filter Proxy";
+            button1.Text = "Start";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
@@ -83,7 +84,7 @@
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(166, 23);
             textBox3.TabIndex = 3;
-            textBox3.Text = "14.255.255.255";
+            textBox3.Text = "14.162.255.255";
             // 
             // label1
             // 
@@ -140,6 +141,16 @@
             label4.TabIndex = 4;
             label4.Text = "Port To:";
             // 
+            // button2
+            // 
+            button2.Location = new Point(454, 41);
+            button2.Name = "button2";
+            button2.Size = new Size(80, 43);
+            button2.TabIndex = 0;
+            button2.Text = "Stop/Reset";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += buttonReset_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -155,6 +166,7 @@
             Controls.Add(textBox2);
             Controls.Add(textBox1);
             Controls.Add(listBox1);
+            Controls.Add(button2);
             Controls.Add(button1);
             Name = "Form1";
             Text = "Get List Proxy";
@@ -175,5 +187,6 @@
         private TextBox textBox5;
         private Label label3;
         private Label label4;
+        private Button button2;
     }
 }

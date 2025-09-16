@@ -1,14 +1,18 @@
-// =====================================================
+
 // GUIDE TO CALCULATE THE NUMBER OF IPs IN A RANGE
+
 //
 // Example: IP range from 14.160.0.0 → 14.162.5.255
+
 //
 // Formula:
+
 // Number of IPs = (A2 - A1) * 256^3
 //                + (B2 - B1) * 256^2
 //                + (C2 - C1) * 256^1
 //                + (D2 - D1) * 256^0
 // Then add 1 because the first IP is also counted.
+
 //
 // Example:
 // Start IP: 14.160.0.0
