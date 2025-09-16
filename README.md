@@ -5,13 +5,7 @@
 
 // Formula:
 
-// Number of IPs = (A2 - A1) * 256^3
-
-//                + (B2 - B1) * 256^2
-
-//                + (C2 - C1) * 256^1
-
-//                + (D2 - D1) * 256^0
+// Number of IPs = (A2 - A1) * 256^3 + (B2 - B1) * 256^2 + (C2 - C1) * 256^1 + (D2 - D1) * 256^0
 
 // Then add 1 because the first IP is also counted.
 
