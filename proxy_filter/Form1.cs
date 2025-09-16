@@ -57,8 +57,8 @@ namespace proxy_filter
             if (File.Exists(outputFile))
                 File.Delete(outputFile);
 
-            string startIP = "14.160.0.0";
-            string endIP = "14.255.255.255"; // demo
+            string startIP = textBox1.Text; // "14.160.0.0";
+            string endIP = textBox2.Text;  //"14.255.255.255"; // demo
             var allIPs = GenerateIPRange(startIP, endIP).ToList();
 
             var tasks = new List<Task>();
